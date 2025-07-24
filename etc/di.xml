@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * MagoArab_EasYorder Dependency Injection Configuration - UPDATED
+ *
+ * @category    MagoArab
+ * @package     MagoArab_EasYorder
+ * @author      MagoArab Development Team
+ * @copyright   Copyright (c) 2025 MagoArab
+ * @license     https://opensource.org/licenses/MIT MIT License
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    
+    <!-- Service Contracts -->
+    <preference for="MagoArab\EasYorder\Api\QuickOrderServiceInterface" 
+                type="MagoArab\EasYorder\Model\QuickOrderService"/>
+    
+    <preference for="MagoArab\EasYorder\Api\Data\QuickOrderDataInterface" 
+                type="MagoArab\EasYorder\Model\Data\QuickOrderData"/>
+    
+    <!-- Main QuickOrderService with lightweight dependencies -->
+    <type name="MagoArab\EasYorder\Model\QuickOrderService">
+        <arguments>
+            <argument name="helperData" xsi:type="object">MagoArab\EasYorder\Helper\Data</argument>
+            <argument name="logger" xsi:type="object">Psr\Log\LoggerInterface</argument>
+            <argument name="shippingCalculator" xsi:type="object">MagoArab\EasYorder\Model\Service\ShippingCalculator</argument>
+            <argument name="orderCreator" xsi:type="object">MagoArab\EasYorder\Model\Service\OrderCreator</argument>
+            <argument name="priceCalculator" xsi:type="object">MagoArab\EasYorder\Model\Service\PriceCalculator</argument>
+            <argument name="paymentMethodProvider" xsi:type="object">MagoArab\EasYorder\Model\Service\PaymentMethodProvider</argument>
+        </arguments>
+    </type>
+    
+    <!-- ShippingCalculator Service -->
+    <type name="MagoArab\EasYorder\Model\Service\ShippingCalculator">
+        <arguments>
+            <argument name="helperData" xsi:type="object">MagoArab\EasYorder\Helper\Data</argument>
+            <argument name="quoteFactory" xsi:type="object">Magento\Quote\Model\QuoteFactory</argument>
+            <argument name="cartRepository" xsi:type="object">Magento\Quote\Api\CartRepositoryInterface</argument>
+            <argument name="productRepository" xsi:type="object">Magento\Catalog\Api\ProductRepositoryInterface</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="regionFactory" xsi:type="object">Magento\Directory\Model\RegionFactory</argument>
+            <argument name="priceHelper" xsi:type="object">Magento\Framework\Pricing\Helper\Data</argument>
+            <argument name="shippingConfig" xsi:type="object">Magento\Shipping\Model\Config</argument>
+            <argument name="logger" xsi:type="object">Psr\Log\LoggerInterface</argument>
+        </arguments>
+    </type>
+    
+    <!-- OrderCreator Service -->
+    <type name="MagoArab\EasYorder\Model\Service\OrderCreator">
+        <arguments>
+            <argument name="helperData" xsi:type="object">MagoArab\EasYorder\Helper\Data</argument>
+            <argument name="quoteFactory" xsi:type="object">Magento\Quote\Model\QuoteFactory</argument>
+            <argument name="cartRepository" xsi:type="object">Magento\Quote\Api\CartRepositoryInterface</argument>
+            <argument name="cartManagement" xsi:type="object">Magento\Quote\Api\CartManagementInterface</argument>
+            <argument name="productRepository" xsi:type="object">Magento\Catalog\Api\ProductRepositoryInterface</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="orderRepository" xsi:type="object">Magento\Sales\Api\OrderRepositoryInterface</argument>
+            <argument name="orderSender" xsi:type="object">Magento\Sales\Model\Order\Email\Sender\OrderSender</argument>
+            <argument name="regionFactory" xsi:type="object">Magento\Directory\Model\RegionFactory</argument>
+            <argument name="logger" xsi:type="object">Psr\Log\LoggerInterface</argument>
+        </arguments>
+    </type>
+    
+    <!-- PriceCalculator Service -->
+    <type name="MagoArab\EasYorder\Model\Service\PriceCalculator">
+        <arguments>
+            <argument name="helperData" xsi:type="object">MagoArab\EasYorder\Helper\Data</argument>
+            <argument name="quoteFactory" xsi:type="object">Magento\Quote\Model\QuoteFactory</argument>
+            <argument name="cartRepository" xsi:type="object">Magento\Quote\Api\CartRepositoryInterface</argument>
+            <argument name="productRepository" xsi:type="object">Magento\Catalog\Api\ProductRepositoryInterface</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="priceHelper" xsi:type="object">Magento\Framework\Pricing\Helper\Data</argument>
+            <argument name="catalogRuleResource" xsi:type="object">Magento\CatalogRule\Model\ResourceModel\Rule</argument>
+            <argument name="timezone" xsi:type="object">Magento\Framework\Stdlib\DateTime\TimezoneInterface</argument>
+            <argument name="logger" xsi:type="object">Psr\Log\LoggerInterface</argument>
+        </arguments>
+    </type>
+    
+    <!-- PaymentMethodProvider Service -->
+    <type name="MagoArab\EasYorder\Model\Service\PaymentMethodProvider">
+        <arguments>
+            <argument name="helperData" xsi:type="object">MagoArab\EasYorder\Helper\Data</argument>
+            <argument name="paymentMethodList" xsi:type="object">Magento\Payment\Api\PaymentMethodListInterface</argument>
+            <argument name="paymentConfig" xsi:type="object">Magento\Payment\Model\Config</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="scopeConfig" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+            <argument name="logger" xsi:type="object">Psr\Log\LoggerInterface</argument>
+        </arguments>
+    </type>
+    
+    <!-- Controller Dependencies -->
+    <type name="MagoArab\EasYorder\Controller\Order\Create">
+        <arguments>
+            <argument name="quickOrderDataFactory" xsi:type="object">MagoArab\EasYorder\Api\Data\QuickOrderDataInterfaceFactory</argument>
+        </arguments>
+    </type>
+    
+    <!-- Block Dependencies -->
+    <type name="MagoArab\EasYorder\Block\Product\QuickOrder">
+        <arguments>
+            <argument name="helperData" xsi:type="object">MagoArab\EasYorder\Helper\Data</argument>
+            <argument name="quickOrderService" xsi:type="object">MagoArab\EasYorder\Api\QuickOrderServiceInterface</argument>
+            <argument name="registry" xsi:type="object">Magento\Framework\Registry</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface</argument>
+            <argument name="priceHelper" xsi:type="object">Magento\Framework\Pricing\Helper\Data</argument>
+            <argument name="countrySource" xsi:type="object">Magento\Directory\Model\Config\Source\Country</argument>
+            <argument name="jsonHelper" xsi:type="object">Magento\Framework\Json\Helper\Data</argument>
+            <argument name="formKey" xsi:type="object">Magento\Framework\Data\Form\FormKey</argument>
+        </arguments>
+    </type>
+    
+    <!-- Virtual Type for logging -->
+    <virtualType name="MagoArabEasYorderLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">easyorder</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">MagoArabEasYorderLoggerHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    
+    <virtualType name="MagoArabEasYorderLoggerHandler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/easyorder.log</argument>
+        </arguments>
+    </virtualType>
+</config>
